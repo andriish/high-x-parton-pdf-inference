@@ -14,32 +14,32 @@ echo $SCRIPTPATH
 
 
 
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Dirichlet &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 1042 -p Dirichlet -f 5.0 &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Dirichlet > logs/s1.log &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 1042 -p Dirichlet -f 5.0  > logs/s2.log&
 
-  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 10042 -p Dirichlet -f 100.0 &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 10042 -p Dirichlet -f 100.0 > logs/s3.log &
 
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Valence &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Bernstein &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Valence  > logs/s4.log&
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Bernstein  > logs/s5.log&
 
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Dirichlet &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Valence &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Bernstein &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Dirichlet > logs/s6.log &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Valence > logs/s7.log &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 43 -p Bernstein > logs/s8.log &
 
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Dirichlet &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Valence &
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Bernstein &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Dirichlet > logs/s9.log &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Valence > logs/s10.log &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 44 -p Bernstein > logs/s11.log &
 
 
 wait $(jobs -p)
 
 
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Bernstein -d simulation-Bernstein-42 -n 250000 -c 4                  &> logs/1.log&
- #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4                  &> logs/2.log&
+ $JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4                  &> logs/2.log&
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 1045 -p  Dirichlet -d simulation-Dirichlet-1042 -n 250000 -c 4                  &> logs/1002.log&
 
- $JULIA $SCRIPTPATH/PDFfit.jl -s 10045 -p  Dirichlet -d simulation-Dirichlet-100042 -n 250000 -c 4                  &> logs/10002.log&
-
+# $JULIA $SCRIPTPATH/PDFfit.jl -s 10045 -p  Dirichlet -d simulation-Dirichlet-100042 -n 250000 -c 4                  &> logs/10002.log&
+#
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4  --priorshift=1 &> logs/3.log&
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4  --priorshift=2 &> logs/4.log&
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-43 -n 250000 -c 4                 &> logs/5.log&
@@ -55,8 +55,8 @@ wait $(jobs -p)
 mkdir -p figures
      #  $JULIA bin/fig8.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42  &
      #  $JULIA bin/fig567.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42  &
-     #  $JULIA bin/fig2.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42  & 
-       $JULIA bin/fig10.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42  & 
+       $JULIA bin/fig2.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42  
+       $JULIA bin/fig10.jl -s 47 -p  Dirichlet -d simulation-Dirichlet-42 -f fit-Dirichlet-0-45-simulation-Dirichlet-42   
 exit
 #wait $(jobs -p)
 #exit
