@@ -14,10 +14,10 @@ echo $SCRIPTPATH
 
 
 
-  #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Dirichlet &
+  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Dirichlet &
   #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 1042 -p Dirichlet -f 5.0 &
 
-  $JULIA $SCRIPTPATH/generatepseudodata.jl -s 10042 -p Dirichlet -f 100.0 &
+ # $JULIA $SCRIPTPATH/generatepseudodata.jl -s 10042 -p Dirichlet -f 100.0 &
 
   #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Valence &
   #$JULIA $SCRIPTPATH/generatepseudodata.jl -s 42 -p Bernstein &
@@ -35,10 +35,10 @@ wait $(jobs -p)
 
 
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Bernstein -d simulation-Bernstein-42 -n 250000 -c 4                  &> logs/1.log&
- #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4                  &> logs/2.log&
+ $JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4                  &> logs/2.log&
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 1045 -p  Dirichlet -d simulation-Dirichlet-1042 -n 250000 -c 4                  &> logs/1002.log&
 
- $JULIA $SCRIPTPATH/PDFfit.jl -s 10045 -p  Dirichlet -d simulation-Dirichlet-100042 -n 250000 -c 4                  &> logs/10002.log&
+ #$JULIA $SCRIPTPATH/PDFfit.jl -s 10045 -p  Dirichlet -d simulation-Dirichlet-100042 -n 250000 -c 4                  &> logs/10002.log&
 
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4  --priorshift=1 &> logs/3.log&
  #$JULIA $SCRIPTPATH/PDFfit.jl -s 45 -p  Dirichlet -d simulation-Dirichlet-42 -n 250000 -c 4  --priorshift=2 &> logs/4.log&
