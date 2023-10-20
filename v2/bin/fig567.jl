@@ -13,7 +13,9 @@ using Statistics
 using Measures
 using ArgParse
 import HDF5
-include("priors.jl")
+include(string(dirname(pathof(PartonDensity)),"/../utils/priors.jl"))
+include(string(dirname(pathof(PartonDensity)),"/../data/ZEUS_I1787035/ZEUS_I1787035.jl"))
+
 #using bla
 PWIDTH=1000
 function parse_commandline()
@@ -65,7 +67,7 @@ println(seed)
 seedtxt=string(seed)
 
 #Sim data!!!
-pdf_params, sim_data=pd_read_sim(string("pseudodata/", parsed_args["pseudodata"], ".h5"))
+pdf_params, sim_data, MD_TEMP=pd_read_sim(string("pseudodata/", parsed_args["pseudodata"], ".h5"),MD_G)
 
 #Fit results!!!
 samples_data = bat_read(string("fitresults/", parsed_args["fitresults"], ".h5")).result;
