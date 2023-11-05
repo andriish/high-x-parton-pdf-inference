@@ -2,7 +2,7 @@
 import Pkg; 
 Pkg.add("SpecialFunctions");
 Pkg.add(url="https://github.com/bat/BAT.jl.git");
-Pkg.add(url="https://github.com/cescalara/PartonDensity.jl.git")
+Pkg.add(url="https://github.com/cescalara/PartonDensity.jl.git#Nov")
 Pkg.add("Colors");
 Pkg.add("Plots");
 Pkg.add("HDF5");
