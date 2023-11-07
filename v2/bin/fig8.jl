@@ -101,7 +101,10 @@ quark_coeffs = QuarkCoefficients()
 q2_edges_all = Any[]
 x_edges_all = Any[]
 for i in 1:nbins
-    (q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    #(q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    
+    #(q2_edges, x_edges) = ([BinQ2low[n], BinQ2high[n]], [Binxlow[n], Binxhigh[n]])
+    (q2_edges, x_edges) = ([MD_TEMP.m_q2bins_M_begin[i], MD_TEMP.m_q2bins_M_end[i]], [MD_TEMP.m_xbins_M_begin[i], MD_TEMP.m_xbins_M_end[i]])
     push!(q2_edges_all, q2_edges)
     push!(x_edges_all, x_edges)
 end
@@ -122,7 +125,7 @@ end
 
 Ns = 10000 # Number of samples from posterior
 rn = MersenneTwister(seed);
-sub_samples = BAT.bat_sample(rn, samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
 
 forward_model_init(qcdnum_params, splint_params)
 
@@ -133,7 +136,8 @@ chisqem = zeros( length(sub_samples))
 
 
 rng = MersenneTwister(seed);
-sys_err_params = rand(rng, MvNormal(zeros(PartonDensity.nsyst), zeros(PartonDensity.nsyst)))
+nsyst=8
+sys_err_params = rand(rng, MvNormal(zeros(nsyst), zeros(nsyst)))
 
 for s in eachindex(sub_samples)
 
@@ -143,7 +147,7 @@ for s in eachindex(sub_samples)
                                       K_g=sub_samples.v.K_g[s], 
                                       λ_q=sub_samples.v.λ_q[s], 
                                       θ=Vector(sub_samples.v.θ[s]))
-    counts_ep_pred_s, counts_em_pred_s = forward_model(pdf_params_s,qcdnum_params, splint_params, quark_coeffs, sys_err_params)
+    counts_ep_pred_s, counts_em_pred_s = forward_model(pdf_params_s,qcdnum_params, splint_params, quark_coeffs,MD_TEMP, sys_err_params)
     for j in 1:nbins
         counts_ep_pred_s[j] *= 1 + 0.018 * sub_samples.v.Beta1[s]
         counts_em_pred_s[j] *= 1 + 0.018 * sub_samples.v.Beta2[s]
@@ -168,7 +172,7 @@ println(pdf_params)
 sys_err_params =[
     mode_pars_data.beta0_1,mode_pars_data.beta0_2,mode_pars_data.beta0_3,mode_pars_data.beta0_4,
     mode_pars_data.beta0_5,mode_pars_data.beta0_6,mode_pars_data.beta0_7,mode_pars_data.beta0_8]
-    counts_pred_ep_data, counts_pred_em_data = forward_model(pdf_params, qcdnum_params, splint_params, quark_coeffs, sys_err_params)
+    counts_pred_ep_data, counts_pred_em_data = forward_model(pdf_params, qcdnum_params, splint_params, quark_coeffs,MD_TEMP, sys_err_params)
 
 for i in 1:nbins     
     counts_pred_ep_data[i] =counts_pred_ep_data[i]*(1+0.018*mode_pars_data.Beta1)
@@ -187,7 +191,7 @@ for j in 1:nbins
             prob_ep_data[j] = pdf(Poisson(pred), counts_obs_ep_data[j])/pdf(Poisson(pred), best)
             chisqep_data+=(counts_obs_ep_data[j]-pred)^2/pred
             if ( (counts_obs_ep_data[j]-pred)^2/pred>4) 
-                get_bin_info(j) 
+                #get_bin_info(j) 
                 println(j," positron ",pred," ",counts_obs_ep_data[j]," ",(counts_obs_ep_data[j]-pred)^2/pred)
             end
             pred=counts_pred_em_data[j]
@@ -195,7 +199,7 @@ for j in 1:nbins
             prob_em_data[j] = pdf(Poisson(pred), counts_obs_em_data[j])/pdf(Poisson(pred), best)
             chisqem_data+=(counts_obs_em_data[j]-pred)^2/pred
             if ( (counts_obs_em_data[j]-pred)^2/pred>4) 
-                get_bin_info(j) 
+                #get_bin_info(j) 
                 println(j," electron ",pred," ",counts_obs_em_data[j]," ",(counts_obs_em_data[j]-pred)^2/pred)
             end 
 end

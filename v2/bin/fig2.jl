@@ -18,7 +18,7 @@ import HDF5
 PWIDTH=1000
 include(string(dirname(pathof(PartonDensity)),"/../utils/priors.jl"))
 include(string(dirname(pathof(PartonDensity)),"/../data/ZEUS_I1787035/ZEUS_I1787035.jl"))
-
+nsyst=8
 
 function parse_commandline()
     s = ArgParseSettings()
@@ -56,7 +56,7 @@ function main()
         println("  $arg  =>  $val")
     end
 gr(fmt=:png);
-
+context = get_batcontext()
 #c2=colorant"#CCE5E5"
 #c1=colorant"#93A0AB"
 
@@ -117,7 +117,10 @@ quark_coeffs = QuarkCoefficients()
 q2_edges_all = Any[]
 x_edges_all = Any[]
 for i in 1:nbins
-    (q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    #(q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    
+    #(q2_edges, x_edges) = ([BinQ2low[n], BinQ2high[n]], [Binxlow[n], Binxhigh[n]])
+    (q2_edges, x_edges) = ([MD_TEMP.m_q2bins_M_begin[i], MD_TEMP.m_q2bins_M_end[i]], [MD_TEMP.m_xbins_M_begin[i], MD_TEMP.m_xbins_M_end[i]])
     push!(q2_edges_all, q2_edges)
     push!(x_edges_all, x_edges)
 end
@@ -137,8 +140,7 @@ for q2r in 1:n_q2_bins
 end
 
 Ns = 300000 # Number of samples from posterior
-rn = MersenneTwister(seed);
-sub_samples = BAT.bat_sample(rn, samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns),context).result;
 
 forward_model_init(qcdnum_params, splint_params)
 
@@ -149,7 +151,7 @@ chisqem = zeros( length(sub_samples))
 
 
 rng = MersenneTwister(seed);
-sys_err_params = rand(rng, MvNormal(zeros(PartonDensity.nsyst), zeros(PartonDensity.nsyst)))
+sys_err_params = rand(rng, MvNormal(zeros(nsyst), zeros(nsyst)))
 
 
 
@@ -425,9 +427,9 @@ plot!(legend=false,label="xx",
 )
 #rectangle(w, h, x, y) = Shape(x .+ [0.0,w,w,0.0], y .+ [0.0,0.0,h,h])
 #plot!(rectangle(0.05,0.05,0.5,0.5),subplot=4)
-plot!(Shape([0.00,0.00,0.2,0.2],[0.0,0.2,0.2,0.0]),subplot=NNN-1,fillcolor=c3,alpha=alpha_posterior)
-plot!(Shape([0.00,0.00,0.2,0.2],[0.4,0.6,0.6,0.4]),subplot=2*NNN-1,fillcolor=c2,alpha=alpha_posterior)
-plot!(Shape([0.00,0.00,0.2,0.2],[1.0,0.8,0.8,1.0]),subplot=3*NNN-1,fillcolor=c1,alpha=alpha_posterior)
+plot!(Shape([0.00,0.00,0.2,0.2],[0.0,0.2,0.2,0.0]),subplot=NNN-1,fillcolor=c3,alpha=alpha_posterior+0.1)
+plot!(Shape([0.00,0.00,0.2,0.2],[0.4,0.6,0.6,0.4]),subplot=2*NNN-1,fillcolor=c2,alpha=alpha_posterior+0.1)
+plot!(Shape([0.00,0.00,0.2,0.2],[1.0,0.8,0.8,1.0]),subplot=3*NNN-1,fillcolor=c1,alpha=alpha_posterior+0.1)
 annotate!(p[NNN],0.0,0.10,text(L"~~\mathrm{Posterior}~99~\%",18))
 annotate!(p[2*NNN],0.0,0.50,text(L"~~\mathrm{Posterior}~95~\%",18))
 annotate!(p[3*NNN],0.0,0.90,text(L"~~\mathrm{Posterior}~68~\%",18))
