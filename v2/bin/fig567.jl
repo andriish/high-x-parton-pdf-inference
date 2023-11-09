@@ -120,7 +120,7 @@ end
 
 
 
-Ns = 100000 # Number of samples from posterior
+Ns = 10000 # Number of samples from posterior
 rn = MersenneTwister(seed);
 sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
 
