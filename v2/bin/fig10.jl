@@ -117,7 +117,10 @@ quark_coeffs = QuarkCoefficients()
 q2_edges_all = Any[]
 x_edges_all = Any[]
 for i in 1:nbins
-    (q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    #(q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    
+    #(q2_edges, x_edges) = ([BinQ2low[n], BinQ2high[n]], [Binxlow[n], Binxhigh[n]])
+    (q2_edges, x_edges) = ([MD_TEMP.m_q2bins_M_begin[i], MD_TEMP.m_q2bins_M_end[i]], [MD_TEMP.m_xbins_M_begin[i], MD_TEMP.m_xbins_M_end[i]])
     push!(q2_edges_all, q2_edges)
     push!(x_edges_all, x_edges)
 end
@@ -136,9 +139,9 @@ for q2r in 1:n_q2_bins
     push!(x_values, [mean(_) for _ in x_edges_all[bin_sel]])
 end
 
-Ns = 300000 # Number of samples from posterior
+Ns = 30000 # Number of samples from posterior
 rn = MersenneTwister(seed);
-sub_samples = BAT.bat_sample(rn, samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
 
 forward_model_init(qcdnum_params, splint_params)
 
@@ -149,7 +152,8 @@ chisqem = zeros( length(sub_samples))
 
 
 rng = MersenneTwister(seed);
-sys_err_params = rand(rng, MvNormal(zeros(PartonDensity.nsyst), zeros(PartonDensity.nsyst)))
+nsyst=8
+sys_err_params = rand(rng, MvNormal(zeros(nsyst), zeros(nsyst)))
 
 
 

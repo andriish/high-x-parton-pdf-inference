@@ -98,7 +98,7 @@ quark_coeffs = QuarkCoefficients()
 q2_edges_all = Any[]
 x_edges_all = Any[]
 for i in 1:nbins
-    (q2_edges, x_edges) = get_bin_info(i, quiet=true);
+    (q2_edges, x_edges) = ([MD_TEMP.m_q2bins_M_begin[i], MD_TEMP.m_q2bins_M_end[i]], [MD_TEMP.m_xbins_M_begin[i], MD_TEMP.m_xbins_M_end[i]])
     push!(q2_edges_all, q2_edges)
     push!(x_edges_all, x_edges)
 end
@@ -120,9 +120,9 @@ end
 
 
 
-Ns = 100000 # Number of samples from posterior
+Ns = 10000 # Number of samples from posterior
 rn = MersenneTwister(seed);
-sub_samples = BAT.bat_sample(rn, samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
 
 forward_model_init(qcdnum_params, splint_params)
 
@@ -133,7 +133,8 @@ chisqem = zeros( length(sub_samples))
 
 
 rng = MersenneTwister(seed);
-sys_err_params = rand(rng, MvNormal(zeros(PartonDensity.nsyst), zeros(PartonDensity.nsyst)))
+nsyst=8
+sys_err_params = rand(MvNormal(zeros(nsyst), zeros(nsyst)))
 
 for s in eachindex(sub_samples)
 
@@ -144,11 +145,7 @@ for s in eachindex(sub_samples)
                                       λ_q=sub_samples.v.λ_q[s], 
                                       θ=Vector(sub_samples.v.θ[s]))
         
-    counts_ep_pred_s, counts_em_pred_s = forward_model(pdf_params_s,    
-                                                              qcdnum_params, 
-                                                              splint_params,
-                                                              quark_coeffs, 
-                                                              sys_err_params)
+    counts_ep_pred_s, counts_em_pred_s = forward_model(pdf_params_s,    qcdnum_params, splint_params,quark_coeffs, MD_TEMP, sys_err_params)
     
     for j in 1:nbins
         
