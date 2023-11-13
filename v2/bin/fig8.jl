@@ -12,6 +12,7 @@ using HypothesisTests
 using Statistics
 using Measures
 using ArgParse
+using Distributions
 import HDF5
 include(string(dirname(pathof(PartonDensity)),"/../utils/priors.jl"))
 include(string(dirname(pathof(PartonDensity)),"/../data/ZEUS_I1787035/ZEUS_I1787035.jl"))
@@ -59,8 +60,8 @@ c2 = :royalblue4
 c3 = :midnightblue
 c4 = :grey
 
-c2=colorant"#CCE5E5"
-c1=colorant"#93A0AB"
+#c2=colorant"#CCE5E5"
+#c1=colorant"#93A0AB"
 color_scheme = :viridis
 font_family = "Computer Modern"
 default(fontfamily = "Computer Modern")
@@ -133,6 +134,7 @@ counts_em_sampled = zeros(UInt64, (length(sub_samples), nbins))
 counts_ep_sampled = zeros(UInt64, (length(sub_samples), nbins))
 chisqep = zeros( length(sub_samples))
 chisqem = zeros( length(sub_samples))
+chisq = zeros( length(sub_samples))
 
 
 rng = MersenneTwister(seed);
@@ -156,7 +158,7 @@ for s in eachindex(sub_samples)
         chisqep[s]+=(counts_ep_pred_s[j]-counts_ep_sampled[s, j])^2/counts_ep_pred_s[j]
         chisqem[s]+=(counts_em_pred_s[j]-counts_em_sampled[s, j])^2/counts_em_pred_s[j]
     end
-    
+    chisq[s]=chisqep[s]+chisqem[s];
 end
 
 #
@@ -240,7 +242,45 @@ annotate!(p1,220.0,350,text(L"$e^{+}p$",26))
 annotate!(p2,220.0,350,text(L"$e^{-}p$",26))
 #plot(p1,p2,layout=(2,1))
 
-plot(p1,p2,layout=(2,1),size=(PWIDTH/2,PWIDTH/2),
+
+#chisq = [chisqem; chisqep]
+
+
+#xx=histogram(2*length(sub_samples)*Chisq(2*nbins-10),bins=100,xlabel=L"\chi^2_P", ylabel="Entries", fontfamily=font_family,color=c1, linecolor=c1, grid=false)
+
+p3=histogram(chisq,bins=100,xlabel=L"\chi^2_P", ylabel="Entries", fontfamily=font_family,color=c1, linecolor=c1, grid=false, label = L"\chi^2_P data" )
+p3=plot!(fontfamily=font_family, 
+  label = L"\chi^2(ndof)",
+  legend=:topright, 
+  foreground_color_legend=:transparent, 
+  background_color_legend=:transparent,
+ xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
+        ,ylims=(0, 450), xlims=(2*65,2*265)
+        ,color=:red, grid=false,left_margin=14mm,bottom_margin=5.5mm
+)
+
+#annotate!(p3,2*220.0,350,text(L"$e^{\pm}p$",26))
+
+
+
+
+
+c1 = :midnightblue
+c2 = :teal
+c3 = :grey
+c4 = :grey
+c5 = :grey
+
+
+#plot(p1,p2,layout=(2,1),size=(PWIDTH/2,PWIDTH/2),
+#plot(p3,2*length(sub_samples)*Chisq(2*nbins-10), size=(PWIDTH/2,PWIDTH/2),
+
+CC(x) = 2*length(sub_samples)*pdf(Chisq(2*nbins-10),x)
+p3=plot!(CC, label = L"\chi^2(ndof)",lw=2,linecolor=:red)
+
+println(length(sub_samples))
+println(2*nbins-10)
+plot(p3, size=(PWIDTH/2,PWIDTH/2),
     #top_margin=-3mm,
     bottom_margin=-3mm,
     #right_margin=-4mm,
