@@ -86,7 +86,7 @@ samples_data = bat_read(string("fitresults/", parsed_args["fitresults"], ".h5"))
 
 
 
-samples_data1 = bat_transform(v -> (Δ_g = v.θ[3] + v.θ[4], Δ_sea = sum(v.θ[5:9]), K_u = v.K_u, K_q=v.K_q, K_g = v.K_g, K_d=v.K_d ), samples_data).result
+samples_data1 = bat_transform(v -> (Δ_g = v.θ[3] + v.θ[4], Δ_sea = sum(v.θ[5:9]), K_u = v.K_u, K_q=v.K_q, K_g = v.K_g, K_d=v.K_d, θ=v.θ ), samples_data).result
 
 
 
@@ -169,7 +169,7 @@ prior_alpha = 0.2;
 prior=get_priors(parsed_args)
 
 prior_samples =bat_sample(prior).result;
-prior_samples1 = bat_transform(v -> (Δ_g = v.θ[3] + v.θ[4], Δ_sea = sum(v.θ[5:9]), K_u = v.K_u, K_q=v.K_q, K_g = v.K_g, K_d=v.K_d ), prior_samples).result
+prior_samples1 = bat_transform(v -> (Δ_g = v.θ[3] + v.θ[4], Δ_sea = sum(v.θ[5:9]), K_u = v.K_u, K_q=v.K_q, K_g = v.K_g, K_d=v.K_d ,  θ=v.θ), prior_samples).result
 
 
 
@@ -223,30 +223,6 @@ end
 
 NNN = 8
 
-l = @layout [[grid(5,5)]]
-#pgfplotsx()
-
-
-
-l = @layout [
-        [a1{0.20w}  b1{0.18w} c1{0.18w} d1{0.18w} e1{0.18w}]
-        [a2{0.20w} b2{0.18w} c2{0.18w} d2{0.18w} e2{0.18w}]
-        [a3{0.20w} b3{0.18w} c3{0.18w} d3{0.18w} e3{0.18w}]
-        [a4{0.20w} b4{0.18w} c4{0.18w} d4{0.18w} e4{0.18w} ]
-        [a5{0.20w} b5{0.18w} c5{0.18w} d5{0.18w} e5{0.18w} ]
-
-]
-
-
-l = @layout [
-        [a1{0.18w}  b1{0.16w} c1{0.16w} d1{0.16w} e1{0.16w} f1{0.16w}]
-        [a2{0.18w} b2{0.16w} c2{0.16w} d2{0.16w} e2{0.16w} f2{0.16w}]
-        [a3{0.18w} b3{0.16w} c3{0.16w} d3{0.16w} e3{0.16w} f3{0.16w} ]
-        [a4{0.18w} b4{0.16w} c4{0.16w} d4{0.16w} e4{0.16w} f4{0.16w} ]
-        [a5{0.18w} b5{0.16w} c5{0.16w} d5{0.16w} e5{0.16w} f5{0.16w}]
-        [a6{0.18w} b6{0.16w} c6{0.16w} d6{0.16w} e6{0.16w} f6{0.16w}]
-
-]
 
 l = @layout [
         [a1{0.12w}  b1{0.11w} c1{0.11w} d1{0.11w} e1{0.11w} f1{0.11w} g1{0.11w} h1{0.11w}]
@@ -283,51 +259,121 @@ layout=l,
     bottom_margin=-1mm,
     right_margin=-4mm,
     left_margin=-4mm,
-    xtickfontsize=14,
-    ytickfontsize=14,
-    yguidefontsize=16,
-    xguidefontsize=16,
+    xtickfontsize=12,
+    ytickfontsize=12,
+    yguidefontsize=12,
+    xguidefontsize=12,
     fontfamily=font_family,
     grid=false
 )
-plot!(samples_data, :(θ[1]),subplot=1, xlabel="",ylabel=L"θ[1]",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=2)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=3)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=4)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=5)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=6)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=7)
-plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=8)
+#plot!(samples_data, :(θ[1]),subplot=1, xlabel="",ylabel=L"θ[1]",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+#for i in 2:NNN
+#plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=i)
+#end
+j=1
+plot!(samples_data, :(θ[1]) ,subplot=(j-1)*NNN+1, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+
+j=2
+plot!(samples_data, (:(θ[1]), :(θ[2])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[2]) ,subplot=(j-1)*NNN+2, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+j=3
+plot!(samples_data, (:(θ[1]), :(θ[3])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[3])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[3]) ,subplot=(j-1)*NNN+3, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+
+j=4
+plot!(samples_data, (:(θ[1]), :(θ[4])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[4])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[3]), :(θ[4])),subplot=(j-1)*NNN+3, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[4]) ,subplot=(j-1)*NNN+4, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+
+j=5
+plot!(samples_data, (:(θ[1]), :(θ[5])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[5])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[3]), :(θ[5])),subplot=(j-1)*NNN+3, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[4]), :(θ[5])),subplot=(j-1)*NNN+4, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[5]) ,subplot=(j-1)*NNN+5, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+
+j=6
+plot!(samples_data, (:(θ[1]), :(θ[6])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[6])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[3]), :(θ[6])),subplot=(j-1)*NNN+3, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[4]), :(θ[6])),subplot=(j-1)*NNN+4, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[5]), :(θ[6])),subplot=(j-1)*NNN+5, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[6]) ,subplot=(j-1)*NNN+6, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+j=7
+plot!(samples_data, (:(θ[1]), :(θ[7])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[7])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[3]), :(θ[7])),subplot=(j-1)*NNN+3, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[4]), :(θ[7])),subplot=(j-1)*NNN+4, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[5]), :(θ[7])),subplot=(j-1)*NNN+5, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[6]), :(θ[7])),subplot=(j-1)*NNN+6, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[7]) ,subplot=(j-1)*NNN+7, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+j=8
+plot!(samples_data, (:(θ[1]), :(θ[8])),subplot=(j-1)*NNN+1, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[2]), :(θ[8])),subplot=(j-1)*NNN+2, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[3]), :(θ[8])),subplot=(j-1)*NNN+3, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[4]), :(θ[8])),subplot=(j-1)*NNN+4, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[5]), :(θ[8])),subplot=(j-1)*NNN+5, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[6]), :(θ[8])),subplot=(j-1)*NNN+6, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data, (:(θ[7]), :(θ[8])),subplot=(j-1)*NNN+7, xlabel="",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+plot!(samples_data,           :(θ[8]) ,subplot=(j-1)*NNN+8, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
 
 
 
-plot!(samples_data, (:(θ[1]), :(θ[2])),subplot=NNN+1, xlabel="",ylabel=L"K_d",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
-plot!(samples_data, :(θ[2]),subplot=NNN+2, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+
+for j in 1:NNN-1
+#for i in 1:j
+#plot!(samples_data, (:(θ[i]), :(θ[j])),subplot=j*(NNN-1)+i, xlabel="",ylabel=L"K_d",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior,markerstrokewidth = 0, marginalmode=false)
+#end
+#xx=string("(θ[",j,"])")
+#plot!(samples_data, :xx,subplot=j*(NNN-1)+j, xlabel="",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
+for i in j+1:NNN
+plot!(legend=false,grid=false,foreground_color_subplot=:white,subplot=(j-1)*NNN+i)
+end
+end
 
 
-plot!(samples_data1, (:(θ[1]), :(θ[7])),subplot=7*NNN+1, xlabel=L"K_u",ylabel=L"\Delta_{\mathrm{sea}}",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
+
+
+#plot!(samples_data1, (:(θ[1]), :(θ[7])),subplot=7*NNN+1, xlabel=L"K_u",ylabel=L"\Delta_{\mathrm{sea}}",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
 #plot!(samples_data1, (:(K_d), :(Δ_sea)),subplot=7*NNN+2, xlabel=L"K_d",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
 #plot!(samples_data1, (:(K_q), :(Δ_sea)),subplot=7*NNN+3, xlabel=L"K_q",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
 #plot!(samples_data1, (:(K_g), :(Δ_sea)),subplot=7*NNN+4, xlabel=L"K_g",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
 #plot!(samples_data1, (:(Δ_g),:(Δ_sea)), subplot=7*NNN+5, xlabel=L"\Delta_g",ylabel="",fillcolors=reverse([c1, c2, c3]),alpha=alpha_posterior, marginalmode=false)
 #plot!(samples_data1, :(Δ_sea),subplot=5*NNN+6, xlabel=L"\Delta_{\mathrm{sea}}",ylabel="",colors=[c1, c2, c3],alpha=alpha_posterior, bins=100)
 
+for j in 2:NNN
+plot!(p[(j-1)*NNN+1],ylabel=string("\theta_",j),left_margin=3mm,yticks=(-0.3:0.3:0.3,["-0.3","0","0.3"]))
+end
+
+for i in 1:NNN
+plot!(p[(NNN-1)*NNN+i],xlabel=string("\theta_",i),xticks=(-0.3:0.3:0.3,["-0.3","0","0.3"]))
+end
 
 
-
-
-for i in 0:NNN-1
+for i in 1:NNN
 for j in 1:NNN
-plot!(p[NNN*i+j],xlims=(-3,3))
+plot!(p[NNN*(i-1)+j],xlims=(-0.45,0.45))
 end
 end
 
 for i in 1:NNN
-for j in 0:NNN-
-plot!(p[j*NNN+i],ylims=(1.5,6.5))
+for j in 1:NNN
+plot!(p[(i-1)*NNN+j],ylims=(-0.5,0.5))
 end
 end
 
+for i in 1:NNN
+plot!(p[(i-1)*NNN+i],ylims=(0.0,40.0))
+end
 for i in 1:NNN*NNN
 plot!(p[0+i],right_margin=-3mm)
 end
@@ -390,9 +436,9 @@ plot!(legend=false,label="xx",
 plot!(Shape([0.00,0.00,0.2,0.2],[0.0,0.2,0.2,0.0]),subplot=NNN-1,fillcolor=c3,alpha=alpha_posterior)
 plot!(Shape([0.00,0.00,0.2,0.2],[0.4,0.6,0.6,0.4]),subplot=2*NNN-1,fillcolor=c2,alpha=alpha_posterior)
 plot!(Shape([0.00,0.00,0.2,0.2],[1.0,0.8,0.8,1.0]),subplot=3*NNN-1,fillcolor=c1,alpha=alpha_posterior)
-annotate!(p[NNN],0.0,0.10,text(L"~~\mathrm{Posterior}~99~\%",18))
-annotate!(p[2*NNN],0.0,0.50,text(L"~~\mathrm{Posterior}~95~\%",18))
-annotate!(p[3*NNN],0.0,0.90,text(L"~~\mathrm{Posterior}~68~\%",18))
+annotate!(p[NNN],0.0,0.10,text(L"~~~~\mathrm{Posterior}~99~\%",18))
+annotate!(p[2*NNN],0.0,0.50,text(L"~~~~\mathrm{Posterior}~95~\%",18))
+annotate!(p[3*NNN],0.0,0.90,text(L"~~~~\mathrm{Posterior}~68~\%",18))
 
 
 plot(p)
