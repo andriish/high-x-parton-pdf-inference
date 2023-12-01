@@ -17,7 +17,7 @@ include(string(dirname(pathof(PartonDensity)),"/../utils/priors.jl"))
 include(string(dirname(pathof(PartonDensity)),"/../data/ZEUS_I1787035/ZEUS_I1787035.jl"))
 nsyst=8
 #using bla
-PWIDTH=1000
+
 function parse_commandline()
     s = ArgParseSettings()
 
@@ -293,17 +293,23 @@ yticks_4=(0.0:0.2:0.4,["0","0.2","0.4"])
 end
 
 
-plot(framestyle=:axes, size=(PWIDTH/2, PWIDTH/2), fontfamily=font_family, 
-    layout=@layout([a b; c{0.55w, 0.6h} d]), grid=false
+
+
+# Joint posterior
+if (parsed_args["what"] == "d") || (parsed_args["what"] == "u")
+
+PWIDTH=1000
+plot(framestyle=:axes, size=(PWIDTH/2, PWIDTH/2)
+   , fontfamily=font_family 
+    #layout=@layout([a b; c{0.55w, 0.6h} d])
+    , grid=false
     , right_margin=1mm
     , left_margin=0mm
     , top_margin=0mm
     , bottom_margin=0mm
 )
-
-# Joint posterior
 plot!(SP, (:(A), :(B)),
-    subplot=3, 
+    subplot=1, 
     xlabel=A_label, ylabel=B_label,
     seriestype=:smallest_intervals_contourf, smoothing=4, 
     marginalmode=false, intervals=intervals
@@ -311,14 +317,14 @@ plot!(SP, (:(A), :(B)),
     , linewidth=0
     , alpha=prior_alpha
     , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=-2mm
+    , right_margin=2mm
     , left_margin=6mm
     , top_margin=0mm
     , bottom_margin=3mm
     , ylims=ylims_3
 )
 plot!(SD, (:(A), :(B)), 
-    subplot=3,     
+    subplot=1,     
     xlabel=A_label, ylabel=B_label,
     seriestype=:smallest_intervals_contourf, smoothing=2, 
     marginalmode=false, intervals=intervals
@@ -328,86 +334,99 @@ plot!(SD, (:(A), :(B)),
     , xlims=xlims_3
     , ylims=ylims_3
     , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=-2mm
+    , right_margin=2mm
     , left_margin=6mm
     , top_margin=0mm
     , bottom_margin=3mm
     , yticks=yticks_3
 )
-plot!([A_true],[B_true],
-    seriestype = :scatter, subplot = 3, color = "red"
+p=plot!([A_true],[B_true],
+    seriestype = :scatter, subplot = 1, color = "red"
     ,legend = :none,lw=0, 
     )
 
 
 
-plot!(SP, :A, bins=100,
-    subplot=1, 
-    legend=false, marginalmode=false, 
-    seriestype=:smallest_intervals, intervals=intervals
-    , fillcolors=reverse(prior_colors)
-    , colors=prior_colors
-    , alpha=prior_alpha
-    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=-2mm
-    , left_margin=6mm
-    , top_margin=0mm
-    , bottom_margin=3mm
-)
-plot!(SD, :A,  bins=100,
-    subplot=1, 
-    legend=false, xlabel="", ylabel=PA_label
-    , xlims=xlims_1
-    , ylims=ylims_1
-    , seriestype=:smallest_intervals 
-    , marginalmode=false, intervals=intervals, colors=colors
-    , alpha=prior_alpha
-    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=-2mm
-    , left_margin=6mm
-    , top_margin=0mm
-    , bottom_margin=3mm
-    , yticks=yticks_1
-)
-vline!([A_true], color="red", label=" Truth", lw=0.5)
+#plot!(SP, :A, bins=100,
+#    subplot=1, 
+#    legend=false, marginalmode=false, 
+#    seriestype=:smallest_intervals, intervals=intervals
+#    , fillcolors=reverse(prior_colors)
+#    , colors=prior_colors
+#    , alpha=prior_alpha
+#    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
+#    , right_margin=-2mm
+#    , left_margin=6mm
+#    , top_margin=0mm
+#    , bottom_margin=3mm
+#)
+#plot!(SD, :A,  bins=100,
+#    subplot=1, 
+#    legend=false, xlabel="", ylabel=PA_label
+#    , xlims=xlims_1
+#    , ylims=ylims_1
+#    , seriestype=:smallest_intervals 
+#    , marginalmode=false, intervals=intervals, colors=colors
+#    , alpha=prior_alpha
+#    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
+#    , right_margin=-2mm
+#    , left_margin=6mm
+#    , top_margin=0mm
+#    , bottom_margin=3mm
+#    , yticks=yticks_1
+#)
+#vline!([A_true], color="red", label=" Truth", lw=0.5)
 
-# Delta_u marginal
-plot!(SP, :(B), bins=100,
-    subplot=4,
-    legend=false, marginalmode=false, 
-    seriestype=:smallest_intervals, intervals=intervals
-   # , fillcolors=reverse(prior_colors)
-    , colors=prior_colors
-    , orientation=:horizontal
-    , alpha=prior_alpha
-    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=1mm
-    , left_margin=5mm
-    , top_margin=0mm
-    , bottom_margin=3mm
-    , ylims=ylims_4
-)
-plot!(SD, :(B), bins=100,
-    subplot=4,
-    legend=false, ylabel="", xlabel=L"P(\Delta_u)"
-    , xlims=xlims_4
-    , ylims=ylims_4
-    , seriestype=:smallest_intervals, intervals=intervals, marginalmode=false 
-    , colors=colors,  orientation=:horizontal
-    , alpha=prior_alpha
-    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , xticks=xticks_4
-    , yticks=yticks_4
-    , right_margin=1mm
-    , left_margin=5mm
-    , top_margin=0mm
-    , bottom_margin=3mm
-)
-hline!([B_true], color="red", label=" Truth", subplot=4, lw=0.5)
-
+## Delta_u marginal
+#plot!(SP, :(B), bins=100,
+#    subplot=4,
+#    legend=false, marginalmode=false, 
+#    seriestype=:smallest_intervals, intervals=intervals
+#   # , fillcolors=reverse(prior_colors)
+#    , colors=prior_colors
+#    , orientation=:horizontal
+#    , alpha=prior_alpha
+#    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
+#    , right_margin=1mm
+#    , left_margin=5mm
+#    , top_margin=0mm
+#    , bottom_margin=3mm
+#    , ylims=ylims_4
+#)
+#plot!(SD, :(B), bins=100,
+#    subplot=4,
+#    legend=false, ylabel="", xlabel=L"P(\Delta_u)"
+#    , xlims=xlims_4
+#    , ylims=ylims_4
+#    , seriestype=:smallest_intervals, intervals=intervals, marginalmode=false 
+#    , colors=colors,  orientation=:horizontal
+#    , alpha=prior_alpha
+#    , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
+#    , xticks=xticks_4
+#    , yticks=yticks_4
+#    , right_margin=1mm
+#    , left_margin=5mm
+#    , top_margin=0mm
+#    , bottom_margin=3mm
+#)
+#hline!([B_true], color="red", label=" Truth", subplot=4, lw=0.5)
+end
 # Legend
+if parsed_args["what"] == "x"
+
+PWIDTH=1000
+plot(framestyle=:axes, size=(PWIDTH/2, PWIDTH/2)
+   , fontfamily=font_family 
+   # , layout=@layout [[a1{0.3w, 0.3h} a2{0.4w, 0.3h} a3{0.3w, 0.3h}] [ b1{0.3w, 0.4h} b2{0.4w, 0.4h} b3{0.3w, 0.4h}] [ c1{0.3w, 0.3h} c2{0.4w, 0.3h} c3{0.3w, 0.3h}]]
+    , grid=false
+    , right_margin=1mm
+    , left_margin=0mm
+    , top_margin=0mm
+    , bottom_margin=0mm
+)
+
 plot!(SP, (:(A), :(B)), 
-    subplot=2,
+    subplot=1,
     xlabel=A_label, ylabel=B_label,
     seriestype=:smallest_intervals,
     marginalmode=false, intervals=intervals, interval_labels=prior_labels
@@ -415,35 +434,37 @@ plot!(SP, (:(A), :(B)),
     , colors=reverse(prior_colors), linewidth=0
     , alpha=prior_alpha
     , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=14
-    , right_margin=1mm
+    , right_margin=2mm
     , left_margin=5mm
     , top_margin=0mm
     , bottom_margin=3mm
     , yticks=yticks_2
 )
 plot!(SD, (:(A), :(B)),
-    subplot=2,
+    subplot=1,
     seriestype=:smallest_intervals,
     marginalmode=false, intervals=intervals, colors=reverse(colors), 
     interval_labels=labels,
     linewidth=0
     , alpha=prior_alpha
-    , legend=:bottomright, foreground_color_legend=:transparent, background_color_legend=:transparent,
+    #, legend=:bottomright
+    , legend=:top
+    , foreground_color_legend=:transparent, background_color_legend=:transparent,
     framestyle=:none
     , xlims=(0, 1.)
     , ylims=(0, 0.1)
     , xtickfontsize=14,ytickfontsize=14,yguidefontsize=16,xguidefontsize=16, legendfontsize=12
-    , right_margin=1mm
+    , right_margin=2mm
     , left_margin=5mm
     , top_margin=0mm
     , bottom_margin=-3mm
     , yticks=yticks_2
 )
 p=plot!([-100],[-100],
-    seriestype = :scatter, subplot = 2, color = "red"
+    seriestype = :scatter, subplot = 1, color = "red"
     ,label = " Truth", legendfontsize=12, lc=:red
     )
-
+end
 p
 
 filename = string("figures/fig34",parsed_args["what"],"-",parsed_args["fitresults"], "_v2.pdf")

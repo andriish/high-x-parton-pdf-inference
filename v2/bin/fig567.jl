@@ -54,6 +54,7 @@ function main()
         println("  $arg  =>  $val")
     end
 gr(fmt=:png);
+context = get_batcontext()
 c1 = :teal
 c2 = :royalblue4
 c3 = :midnightblue
@@ -121,8 +122,7 @@ end
 
 
 Ns = 10000 # Number of samples from posterior
-rn = MersenneTwister(seed);
-sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns),context).result;
 
 forward_model_init(qcdnum_params, splint_params)
 
@@ -427,7 +427,7 @@ p = plot!(x_grid, [x_uv_x(x, λ_u_true, K_u_true) for x in x_grid],  lw=3, c=:re
 )
 
 Ns = 100 # Number of samples from posterior
-sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns)).result;
+sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns),context).result;
 for s in eachindex(sub_samples)
 
     pdf_params_s = DirichletPDFParams(K_u=sub_samples.v.K_u[s], K_d=sub_samples.v.K_d[s], K_q=sub_samples.v.K_q[s],
@@ -700,8 +700,8 @@ plot!(legend=:left, foreground_color_legend=nothing, framestyle=:none,
     subplot=3, xlim=(1,2), ylim=(0, 900), legendfontsize=14, thickness_scaling=1,
     left_margin=-12mm, right_margin=3mm)
 annotate!(1.4, 980*0.9, text("\$Q^2\$ [GeV\$^2\$]", 14, font_family), subplot=3)
-annotate!(0.13, 600*0.9, text(L"$e^{-}$", 22, font_family), subplot=1)
-p = annotate!(0.13, 600*0.9, text(L"$e^{+}$", 22, font_family), subplot=2)
+annotate!(0.13, 600*0.9, text(L"$e^{-}p$", 22, font_family), subplot=1)
+p = annotate!(0.13, 600*0.9, text(L"$e^{+}p$", 22, font_family), subplot=2)
 p
 
 savefig( string("figures/fig7-",parsed_args["fitresults"],"_v2.pdf"))
