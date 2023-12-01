@@ -621,38 +621,40 @@ savefig(filename)
 
 
 
+################################
+######################################
 
 
-
-plot(framestyle=:axes, size=(PWIDTH,PWIDTH/2), fontfamily=font_family, 
+plot(framestyle=:axes, size=(PWIDTH*0.75,PWIDTH/2), fontfamily=font_family, 
     leftmargin=3Plots.mm, bottommargin=5Plots.mm, rightmargin=9mm,
-    layout=@layout([a b c{0.20w}]),
+    layout=@layout([a{0.75w} b{0.001w} c{0.24w}]),
     xtickfontsize=14,ytickfontsize=14,yguidefontsize=18,xguidefontsize=18
    , grid=false
 )
 
 plot!(inset=(1, bbox(0.23, 0.75, 0.55, 0.25, :bottom)))
-plot!(inset=(2, bbox(0.23, 0.75, 0.55, 0.25, :bottom)))
+#plot!(inset=(2, bbox(0.23, 0.75, 0.55, 0.25, :bottom)))
 
 plot!(xlim=(5e-2, 1), ylim=(0, 900), xlabel="\$x\$", ylabel="Counts", xscale=:log, 
     grid=false, legend=:false, foreground_color_legend=nothing,
     legendfontsize=10, thickness_scaling=1, 
     xticks=([0.1, 10^-0.5, 1.0],[L"$10^{-1}$",L"$10^{-0.5}$",L"$1$"]),
     subplot=1
-    ,left_margin=13mm
+    ,left_margin=2mm
     ,right_margin=1mm
-    ,bottom_margin=8mm
+    ,bottom_margin=6mm
     )
-plot!(xlim=(5e-2, 1), ylim=(0, 900), xlabel="\$x\$", ylabel="", xscale=:log, 
-    grid=false, legend=false, 
-    xticks=([0.1, 10^-0.5, 1.0],[L"$10^{-1}$",L"$10^{-0.5}$",L"$1$"]),
-    subplot=2
-    ,left_margin=6mm
-    ,right_margin=8mm
-    ,bottom_margin=8mm
-    )
+plot!(axis = nothing,subplot=2,border=nothing)
+#plot!(xlim=(5e-2, 1), ylim=(0, 900), xlabel="\$x\$", ylabel="", xscale=:log, 
+#    grid=false, legend=false, 
+#    xticks=([0.1, 10^-0.5, 1.0],[L"$10^{-1}$",L"$10^{-0.5}$",L"$1$"]),
+#    subplot=2
+#    ,left_margin=6mm
+#    ,right_margin=8mm
+#    ,bottom_margin=8mm
+#    )
 
-for sp in [4, 5]
+for sp in [4]
     plot!(xlim=(0.3, 1.0), ylim=(0, 50), grid=false, subplot=sp)
 end
 
@@ -661,9 +663,9 @@ for i in 1:n_q2_bins
     label = @sprintf "  \$%g - %g\$" q2_edges_unique[i][1] q2_edges_unique[i][2]
     # Main plots and inset plots
     scatter!(x_values[i], counts_em_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=1)
-    scatter!(x_values[i], counts_ep_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=2)
+  #  scatter!(x_values[i], counts_ep_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=2)
     scatter!(x_values[i], counts_em_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=4)
-    scatter!(x_values[i], counts_ep_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=5)
+  #  scatter!(x_values[i], counts_ep_qsel[i], label="", color=cmap[i], markerstrokewidth=0, subplot=5)
     # For legend (invisible, trick to create space)
     scatter!(x_values[i], counts_em_qsel[i], label=label, color=cmap[i], markerstrokewidth=0, subplot=3)
 end
@@ -681,15 +683,15 @@ for s in eachindex(sub_samples)
 
     for i in 1:n_q2_bins
         scatter!(x_values[i], counts_em_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=1)
-        scatter!(x_values[i], counts_ep_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=2)
+      #  scatter!(x_values[i], counts_ep_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=2)
         scatter!(x_values[i], counts_em_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=4)
-        scatter!(x_values[i], counts_ep_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=5)
+      #  scatter!(x_values[i], counts_ep_s[i], color=cmap[i], markerstrokewidth=0, alpha=0.01, label="", subplot=5)
     end
 
 end
 
 # Draw box around zoomed region and connecting line
-for sp in [1, 2]
+for sp in [1]
     plot!([0.5, 0.5], [0, 50], color="red", linewidth=2, linestyle=:solid, subplot=sp)
     plot!([1.0, 1.0], [0, 50], color="red", linewidth=2, linestyle=:solid, subplot=sp)
     plot!([0.5, 1.0], [50, 50], color="red", linewidth=2, linestyle=:solid, subplot=sp)
@@ -698,13 +700,14 @@ end
 
 plot!(legend=:left, foreground_color_legend=nothing, framestyle=:none,
     subplot=3, xlim=(1,2), ylim=(0, 900), legendfontsize=14, thickness_scaling=1,
-    left_margin=-12mm, right_margin=3mm)
+    left_margin=-16mm, right_margin=6mm)
 annotate!(1.4, 980*0.9, text("\$Q^2\$ [GeV\$^2\$]", 14, font_family), subplot=3)
 annotate!(0.13, 600*0.9, text(L"$e^{-}p$", 22, font_family), subplot=1)
-p = annotate!(0.13, 600*0.9, text(L"$e^{+}p$", 22, font_family), subplot=2)
+#p = annotate!(0.13, 600*0.9, text(L"$e^{+}p$", 22, font_family), subplot=2,left_margin=-1mm,left_margin=-1mm)
+plot!(axis = nothing,subplot=2,border=nothing, grid=false)
 p
 
-savefig( string("figures/fig7-",parsed_args["fitresults"],"_v2.pdf"))
+savefig( string("figures/fig7_2-",parsed_args["fitresults"],"_v3.pdf"))
 end
 
 main()
