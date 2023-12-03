@@ -9,5 +9,5 @@ From: fedora:39
 %runscript
     date
 
-#To build, do as root 'singularity build bin/julia.sif  containers/MPP-julia-fedora39-x86_64-v1.def'
-#To run, do  as user  'singularity exec -B /data:/data bin/julia.sif some_command_I_want'
+#To build, do as root 'singularity build bin/MPP-julia-fedora39-x86_64-v1.sif  containers/MPP-julia-fedora39-x86_64-v1.def'
+#To run, do  as user  'singularity exec -B /data:/data bin/MPP-julia-fedora39-x86_64-v1.sif some_command_I_want'
