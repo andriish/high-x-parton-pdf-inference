@@ -270,12 +270,12 @@ c2 = :teal
 c3 = :grey
 c4 = :grey
 c5 = :grey
-
-
+#:K_u, :K_d, :λ_g1, :λ_g2, :K_g, :λ_q, :K_q,
+FITPARAMS=10
 #plot(p1,p2,layout=(2,1),size=(PWIDTH/2,PWIDTH/2),
 #plot(p3,2*length(sub_samples)*Chisq(2*nbins-10), size=(PWIDTH/2,PWIDTH/2),
 
-CC(x) = 2*length(sub_samples)*pdf(Chisq(2*nbins-10),x)
+CC(x) = 2*length(sub_samples)*pdf(Chisq(2*nbins-FITPARAMS),x)
 p3=plot!(CC, label = L"\chi^2(ndof)",lw=2,linecolor=:red)
 
 println(length(sub_samples))

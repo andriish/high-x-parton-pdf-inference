@@ -414,7 +414,7 @@ end
 # Legend
 if parsed_args["what"] == "x"
 
-PWIDTH=1000
+PWIDTH=500
 plot(framestyle=:axes, size=(PWIDTH/2, PWIDTH/2)
    , fontfamily=font_family 
    # , layout=@layout [[a1{0.3w, 0.3h} a2{0.4w, 0.3h} a3{0.3w, 0.3h}] [ b1{0.3w, 0.4h} b2{0.4w, 0.4h} b3{0.3w, 0.4h}] [ c1{0.3w, 0.3h} c2{0.4w, 0.3h} c3{0.3w, 0.3h}]]

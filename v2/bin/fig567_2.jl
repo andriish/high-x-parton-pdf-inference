@@ -77,17 +77,18 @@ samples_data = bat_read(string("fitresults/", parsed_args["fitresults"], ".h5"))
 counts_obs_ep_data=sim_data["counts_obs_ep"]
 counts_obs_em_data=sim_data["counts_obs_em"]
 
-nbins = size(counts_obs_ep_data)[1]
+nbins_ep = size(counts_obs_ep_data)[1]
+nbins_em = size(counts_obs_em_data)[1]
 
 
-prob_ep_gen = zeros(nbins)
-prob_em_gen = zeros(nbins)
+prob_ep_gen = zeros(nbins_ep)
+prob_em_gen = zeros(nbins_em)
 
-prob_ep_sim = zeros(nbins)
-prob_em_sim = zeros(nbins)
+prob_ep_sim = zeros(nbins_ep)
+prob_em_sim = zeros(nbins_em)
 
-prob_ep_data = zeros(nbins)
-prob_em_data = zeros(nbins)
+prob_ep_data = zeros(nbins_ep)
+prob_em_data = zeros(nbins_em)
 
 mode_pars_data = mode(samples_data)
 
@@ -98,13 +99,17 @@ quark_coeffs = QuarkCoefficients()
 
 q2_edges_all = Any[]
 x_edges_all = Any[]
-for i in 1:nbins
+print("---------- ",nbins_ep,nbins_em,"   ",size(counts_obs_ep_data),size(counts_obs_em_data),size(MD_TEMP.m_q2bins_M_begin),"\n")
+for i in 1:max(nbins_ep,nbins_em)
     (q2_edges, x_edges) = ([MD_TEMP.m_q2bins_M_begin[i], MD_TEMP.m_q2bins_M_end[i]], [MD_TEMP.m_xbins_M_begin[i], MD_TEMP.m_xbins_M_end[i]])
     push!(q2_edges_all, q2_edges)
     push!(x_edges_all, x_edges)
 end
 
 q2_edges_unique = copy(q2_edges_all)
+print(q2_edges_unique)
+print("----------")
+print(unique!(q2_edges_unique))
 n_q2_bins = length(unique!(q2_edges_unique))
 
 # get x, counts for each q2 range
@@ -126,8 +131,8 @@ sub_samples = BAT.bat_sample(samples_data, BAT.OrderedResampling(nsamples=Ns),co
 
 forward_model_init(qcdnum_params, splint_params)
 
-counts_em_sampled = zeros(UInt64, (length(sub_samples), nbins))
-counts_ep_sampled = zeros(UInt64, (length(sub_samples), nbins))
+counts_em_sampled = zeros(UInt64, (length(sub_samples), nbins_em))
+counts_ep_sampled = zeros(UInt64, (length(sub_samples), nbins_ep))
 chisqep = zeros( length(sub_samples))
 chisqem = zeros( length(sub_samples))
 
@@ -147,15 +152,22 @@ for s in eachindex(sub_samples)
         
     counts_ep_pred_s, counts_em_pred_s = forward_model(pdf_params_s,    qcdnum_params, splint_params,quark_coeffs, MD_TEMP, sys_err_params)
     
-    for j in 1:nbins
+    for j in 1:nbins_ep
         
         counts_ep_pred_s[j] *= 1 + 0.018 * sub_samples.v.Beta1[s]
-        counts_em_pred_s[j] *= 1 + 0.018 * sub_samples.v.Beta2[s]
         
-        counts_em_sampled[s, j] = rand(Poisson(counts_em_pred_s[j]))
         counts_ep_sampled[s, j] = rand(Poisson(counts_ep_pred_s[j]))
 
         chisqep[s]+=(counts_ep_pred_s[j]-counts_ep_sampled[s, j])^2/counts_ep_pred_s[j]
+
+    end
+
+    for j in 1:nbins_em
+        
+        counts_em_pred_s[j] *= 1 + 0.018 * sub_samples.v.Beta2[s]
+        
+        counts_em_sampled[s, j] = rand(Poisson(counts_em_pred_s[j]))
+
         chisqem[s]+=(counts_em_pred_s[j]-counts_em_sampled[s, j])^2/counts_em_pred_s[j]
 
     end
