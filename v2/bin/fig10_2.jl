@@ -413,16 +413,16 @@ for i in 1:NNN
 plot!(p[(NNN-1)*NNN+i],xticks=(-3.0:3:3.0,["-3","0","3"]))
 end
 
-plot!(p[1],ylabel=L"\theta_1")
-plot!(p[1+NNN],ylabel=L"\theta_2")
-plot!(p[1+2*NNN],ylabel=L"\theta_3")
-plot!(p[1+3*NNN],ylabel=L"\theta_4")
-plot!(p[1+4*NNN],ylabel=L"\theta_5")
-plot!(p[1+5*NNN],ylabel=L"\theta_6")
-plot!(p[1+6*NNN],ylabel=L"\theta_7")
-plot!(p[1+7*NNN],ylabel=L"\theta_8")
-plot!(p[1+8*NNN],ylabel=L"\theta_9")
-plot!(p[1+9*NNN],ylabel=L"\theta_{10}")
+plot!(p[1],ylabel=L"\delta_1")
+plot!(p[1+NNN],ylabel=L"\delta_2")
+plot!(p[1+2*NNN],ylabel=L"\delta_3")
+plot!(p[1+3*NNN],ylabel=L"\delta_4")
+plot!(p[1+4*NNN],ylabel=L"\delta_5")
+plot!(p[1+5*NNN],ylabel=L"\delta_6")
+plot!(p[1+6*NNN],ylabel=L"\delta_7")
+plot!(p[1+7*NNN],ylabel=L"\delta_8")
+plot!(p[1+8*NNN],ylabel=L"\delta_{01}")
+plot!(p[1+9*NNN],ylabel=L"\delta_{02}")
 
 
 plot!(p[(NNN-1)*NNN+1],xlabel=L"\delta_1")
@@ -433,8 +433,8 @@ plot!(p[(NNN-1)*NNN+5],xlabel=L"\delta_5")
 plot!(p[(NNN-1)*NNN+6],xlabel=L"\delta_6")
 plot!(p[(NNN-1)*NNN+7],xlabel=L"\delta_7")
 plot!(p[(NNN-1)*NNN+8],xlabel=L"\delta_8")
-plot!(p[(NNN-1)*NNN+9],xlabel=L"\delta_9")
-plot!(p[(NNN-1)*NNN+10],xlabel=L"\delta_{10}")
+plot!(p[(NNN-1)*NNN+9],xlabel=L"\delta_{01}")
+plot!(p[(NNN-1)*NNN+10],xlabel=L"\delta_{02}")
 
 
 
