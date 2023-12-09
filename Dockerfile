@@ -1,4 +1,6 @@
 FROM fedora:39
+ENV JULIA_PKGDIR=/opt/julia
+#    export JULIA_DEPOT_PATH=/opt/myjulia   
 RUN    dnf -y update && dnf -y install dnf5  && dnf -y clean all 
 RUN    dnf5 -y install julia python gcc-c++ gcc-gfortran && dnf5 -y clean all 
 RUN  julia  -e 'import Pkg;     \
