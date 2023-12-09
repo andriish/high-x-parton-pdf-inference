@@ -3,7 +3,7 @@ ENV JULIA_PKGDIR=/opt/julia
 #    export JULIA_DEPOT_PATH=/opt/myjulia   
 RUN    dnf -y update && dnf -y install dnf5  && dnf -y clean all 
 RUN    dnf5 -y install julia python gcc-c++ gcc-gfortran && dnf5 -y clean all 
-RUN  julia  -e 'import Pkg;     \
+RUN  JULIA_PKGDIR=/opt/julia julia  -e 'import Pkg;     \
 Pkg.add("SpecialFunctions");                           \
 Pkg.add(url="https://github.com/bat/BAT.jl.git");      \
 Pkg.add(url="https://github.com/cescalara/PartonDensity.jl.git",rev="Dec");     \
